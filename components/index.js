@@ -4,6 +4,7 @@ import ScreenHeaderBtn from "./common/header/ScreenHeaderBtn";
 import Welcome from "./home/welcome/Welcome";
 import Nearbyjobs from "./home/nearby/Nearbyjobs";
 import Popularjobs from "./home/popular/Popularjobs";
+import CustomSwitch from "./home/CustomSwitch";
 
 // job details screen
 import Company from "./jobdetails/company/Company";
@@ -18,6 +19,7 @@ import NearbyJobCard from "./common/cards/nearby/NearbyJobCard";
 export {
   ScreenHeaderBtn,
   Welcome,
+  CustomSwitch,
   Nearbyjobs,
   Popularjobs,
   Company,
