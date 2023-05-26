@@ -11,7 +11,7 @@ import {
 } from "../components";
 import CustomSwitch from "../components/home/CustomSwitch";
 
-const Home = () => {
+const HomeScreen = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [gamesTab, setGamesTab] = useState(1);
@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-      <Stack.Screen
+      {/* <Stack.Screen
         options={{
           headerStyle: { backgroundColor: '#B97309' },
           headerShadowVisible: false,
@@ -33,7 +33,7 @@ const Home = () => {
           ),
           headerTitle: "Home",
         }}
-      />
+      /> */}
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
@@ -76,4 +76,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeScreen;
