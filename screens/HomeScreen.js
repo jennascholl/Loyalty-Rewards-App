@@ -1,77 +1,110 @@
-import React, { useState } from "react";
-import { Text, SafeAreaView, ScrollView, View, TouchableOpacity } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import React, { useState, useContext, useEffect } from "react";
+import { Text, SafeAreaView, ScrollView, View, TouchableOpacity, FlatList } from "react-native";
+import { AuthContext } from '../navigation/AuthProvider';
+import { authentication, db } from '../firebase/firebaseConfig';
+import { doc, getDocs, collection, documentId, query, where, collectionGroup, setLogLevel } from "firebase/firestore"; 
 
 import { COLORS, icons, images, SIZES } from "../constants";
-import {
-  Nearbyjobs,
-  Popularjobs,
-  ScreenHeaderBtn,
-  Welcome,
-} from "../components";
+import { PunchCard } from "../components/PunchCard";
+// import {
+//   Nearbyjobs,
+//   Popularjobs,
+//   ScreenHeaderBtn,
+//   Welcome,
+// } from "../components";
 import CustomSwitch from "../components/home/CustomSwitch";
+import {
+  Container,
+} from '../styles/FeedStyles';
 
 const HomeScreen = () => {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [gamesTab, setGamesTab] = useState(1);
+  // const router = useRouter();
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [filterTab, setFilterTab] = useState(1);
+  const [cardData, setCardData] = useState([]);
+
   const onSelectSwitch = value => {
-    setGamesTab(value);
-  }
+    setFilterTab(value);
+  };
+
+  useEffect(() => {
+    const getCards = async () => {
+      try {
+        const sellersSnapshot = await getDocs(collection(db, 'sellers'));
+        const cardData = [];
+
+        for (const sellerDoc of sellersSnapshot.docs) {
+          const cardsSnapshot = await getDocs(collection(sellerDoc.ref, 'cards'));
+          const sellerCardData = cardsSnapshot.docs.map((doc) => {
+            const cardItem = doc.data();
+            cardItem.id = doc.id; // Assign the document ID to the id property
+            return cardItem;
+          });
+          cardData.push(...sellerCardData);
+        }
+        setCardData(cardData);
+
+      } catch (error) {
+        console.log('Error fetching cards: ', error);
+      }
+    };
+  
+    getCards();
+  }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-      {/* <Stack.Screen
-        options={{
-          headerStyle: { backgroundColor: '#B97309' },
-          headerShadowVisible: false,
-          headerLeft: () => (
-            <ScreenHeaderBtn iconUrl={icons.menu} dimension='60%' />
-          ),
-          headerRight: () => (
-            <ScreenHeaderBtn iconUrl={images.profile} dimension='100%' />
-          ),
-          headerTitle: "Home",
-        }}
-      /> */}
-
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F1F1F0' }}>
         <View
           style={{
             flex: 1,
-            padding: SIZES.medium,
+            paddingBottom: SIZES.medium,
           }}
         >
-          <Welcome
+          {/* <Welcome
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleClick={() => {
               if (searchTerm) {
-                router.push(`/search/${searchTerm}`)
+                // router.push(`/search/${searchTerm}`)
               }
             }}
-          />
+          /> */}
           <View style={{
-            marginVertical: 20,
-            backgroundColor: '#B97309'
+            height: '25%',
+            flex: 1,
+            width: '100%',
+            backgroundColor: '#B97309',
+            borderColor: '#;B97309',
+            borderBottomLeftRadius: 80,
+            position: 'absolute',
+            paddingTop: 10,
+            
           }}>
-            <CustomSwitch
-              selectionMode={1}
-              option1="For Me"
-              option2="Following"
-              option3="In Progress"
-              onSelectSwitch={onSelectSwitch}
+            <CustomSwitch style={{flex:1, width: '90%'}}
+                selectionMode={1}
+                option1="For Me"
+                option2="Following"
+                option3="In Progress"
+                onSelectSwitch={onSelectSwitch}
             />
           </View>
-
-          {gamesTab == 1 && <Text>Recommended</Text>}
-          {gamesTab == 2 && <Text>Following</Text>}
-          {gamesTab == 3 && <Text>In Progress</Text>}
-
-          {/* <Popularjobs /> */}
-          {/* <Nearbyjobs /> */}
-        </View>
-      </ScrollView>
+      </View>
+      <Container style={{marginTop:40, position:'absolute', width:'100%'}}>
+        {filterTab == 1 &&
+          <FlatList style={{width:'100%'}}
+            data={cardData}
+            renderItem={({ item }) => (
+              <PunchCard
+                  item={item}
+                />
+              )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        }
+        {filterTab == 2 && <Text>Following</Text>}
+        {filterTab == 3 && <Text>In Progress</Text>}
+      </Container>
     </SafeAreaView>
   );
 };

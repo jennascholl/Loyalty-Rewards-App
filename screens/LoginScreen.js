@@ -50,27 +50,27 @@ const LoginScreen = ({navigation}) => {
         onPress={() => login(email, password)}
       />
 
-      <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
+      {/* <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
         <Text style={styles.navButtonText}>Forgot Password?</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* {Platform.OS === 'android' ? ( */}
         <View>
-          <SocialButton
+          {/* <SocialButton
             buttonTitle="Sign In with Facebook"
             btnType="facebook"
             color="#4867aa"
             backgroundColor="#e6eaf4"
             // onPress={() => fbLogin()}
-          />
+          /> */}
 
-          <SocialButton
+          {/* <SocialButton
             buttonTitle="Sign In with Google"
             btnType="google"
             color="#de4d41"
             backgroundColor="#f5e7ea"
             // onPress={() => googleLogin()}
-          />
+          /> */}
         </View>
       {/* ) : null}  */}
 
@@ -78,7 +78,7 @@ const LoginScreen = ({navigation}) => {
         style={styles.forgotButton}
         onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.navButtonText}>
-          Don't have an acount? Create here
+          Don't have an acount? Sign up here
         </Text>
       </TouchableOpacity>
     </ScrollView>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial-BoldMT',
     fontSize: 28,
     marginBottom: 10,
-    color: '#051d5f',
+    color: '#B97309',
   },
   navButton: {
     marginTop: 15,
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: '#2e64e5',
+    fontWeight: '200',
+    color: '#000',
     fontFamily: 'ArialMT',
   },
 });

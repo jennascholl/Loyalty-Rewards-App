@@ -5,6 +5,7 @@ const CustomSwitch = ({
   selectionMode,
   option1,
   option2,
+  option3,
   onSelectSwitch,
 }) => {
   const [getSelectionMode, setSelectionMode] = useState(selectionMode);
@@ -18,12 +19,13 @@ const CustomSwitch = ({
     <View
       style={{
         height: 36,
-        width: '100%',
-        gap: 10,
+        width: '95%',
+        gap: 4,
         borderRadius: 40,
         borderColor: '#AD40AF',
         flexDirection: 'row',
         justifyContent: 'center',
+        marginLeft: -4
       }}>
       <TouchableOpacity
         activeOpacity={1}
@@ -41,7 +43,7 @@ const CustomSwitch = ({
           style={{
             color: getSelectionMode == 1 ? 'white' : '#E8D9C2',
             fontWeight: '500',
-            fontSize: 14,
+            fontSize: 16,
             // fontFamily: 'Roboto-Medium',
           }}>
           {option1}
@@ -63,7 +65,7 @@ const CustomSwitch = ({
           style={{
             color: getSelectionMode == 2 ? 'white' : '#E8D9C2',
             fontWeight: '500',
-            fontSize: 14,
+            fontSize: 16,
             // fontFamily: 'Roboto-Medium',
           }}>
           {option2}
@@ -85,10 +87,10 @@ const CustomSwitch = ({
           style={{
             color: getSelectionMode == 3 ? 'white' : '#E8D9C2',
             fontWeight: '500',
-            fontSize: 14,
+            fontSize: 16,
             // fontFamily: 'Roboto-Medium',
           }}>
-          {option2}
+          {option3}
         </Text>
       </TouchableOpacity>
     </View>

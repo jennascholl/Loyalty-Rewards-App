@@ -1,18 +1,21 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 import { authentication, db, signOut } from '../firebase/firebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, collection, getDocs } from "firebase/firestore"; 
 // import { collection, getDocs, doc, setDoc, set, Timestamp } from 'firebase/firestore';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         setUser,
+        users,
         login: async (email, password) => {
           try {
             await signInWithEmailAndPassword(authentication, email, password);
@@ -26,22 +29,16 @@ export const AuthProvider = ({children}) => {
             .then(() => {
               //Once the user creation has happened successfully, we can add the currentUser into firestore
               //with the appropriate details.
-              // setDoc(doc(db, "users", "test"), {
-                // fname: "",
-                // lname: "",
-              //   email: email,
-              // })
-              // db.collection('users').doc(authentication.currentUser.uid)
-              // .set({
-              //     fname: '',
-              //     lname: '',
-              //     email: email,
-              //     createdAt: firestore.Timestamp.fromDate(new Date()),
-              // })
+              const userRef = doc(collection(db, "users"), authentication.currentUser.uid);
+              setDoc(userRef, {
+                email: email,
+                bookmarks: {},
+                follows: {},
+              })
               //ensure we catch any errors at this stage to advise us if something does go wrong
-              // .catch(error => {
-              //     console.log('Something went wrong with added user to firestore: ', error);
-              // })
+              .catch(error => {
+                  console.log('Something went wrong with added user to firestore: ', error);
+              })
             })
             //we need to catch the whole sign up process if it fails too.
             .catch(error => {

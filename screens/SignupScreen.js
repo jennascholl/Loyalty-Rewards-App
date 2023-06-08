@@ -105,15 +105,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial-BoldMT',
     fontSize: 28,
     marginBottom: 10,
-    color: '#051d5f',
+    color: '#B97309',
   },
   navButton: {
     marginTop: 15,
   },
   navButtonText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: '#2e64e5',
+    fontWeight: '200',
+    color: '#000',
     fontFamily: 'ArialMT',
   },
   textPrivate: {
