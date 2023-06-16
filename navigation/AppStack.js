@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, SafeAreaView} from 'react-native';
+import {View, Image, StyleSheet, TouchableOpacity, Text, SafeAreaView} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -9,6 +9,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import HomeScreen from '../screens/HomeScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
+import SellerScreen from '../screens/SellerScreen';
 // import ChatScreen from '../screens/ChatScreen';
 // import ProfileScreen from '../screens/ProfileScreen';
 // import AddPostScreen from '../screens/AddPostScreen';
@@ -39,7 +40,7 @@ const FeedStack = ({navigation}) => (
           elevation: 0,
         },
         headerRight: () => (
-          <View style={{marginRight: 10, marginTop: 10, height: 50}}>
+          <View style={{marginTop: 10, height: 50}}>
             <FontAwesome5.Button
               name='bookmark'
               size={22}
@@ -70,6 +71,34 @@ const FeedStack = ({navigation}) => (
           </View>
         ),
       }}
+    />
+    <Stack.Screen
+      name="SellerPage"
+      component={SellerScreen}
+      options={({ route }) => ({
+        title: '',
+        headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: '#B97309',
+          shadowColor: '#B97309',
+          elevation: 0,
+        },
+        headerBackTitleVisible: false,
+        headerBackImage: () => (
+          <View style={{ marginLeft: 15 }}>
+            <Ionicons name="arrow-back" size={25} color="#000" />
+          </View>
+        ),
+        headerBackground: () => (
+          <Image
+          source={{
+            uri: 'https://bmorrowproductions.com/wp-content/uploads/2023/01/Placeholder-Hero.jpg'
+          }}
+            style={styles.headerBackgroundImage} // Adjust the height to make the image taller
+            resizeMode="cover" // Set the resize mode according to your image aspect ratio
+          />
+        ),  
+      })}
     />
     {/* <Stack.Screen
       name="HomeProfile"
@@ -147,12 +176,16 @@ const AppStack = () => {
 
   return (
     <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#B97309',
-        tabBarStyle: {
-          backgroundColor: '#fff',
-        }
-      }}>
+    screenOptions={{
+      tabBarActiveTintColor: '#B97309',
+      tabBarStyle: {
+        backgroundColor: '#fff',
+        paddingTop: 0, // Remove the top padding of the tab bar
+      },
+      tabBarContentContainerStyle: {
+        paddingTop: 0, // Remove the top padding of the tab bar content
+      },
+    }}>
       <Tab.Screen
         name="Home Tab"
         options={{
@@ -209,3 +242,15 @@ const AppStack = () => {
 };
 
 export default AppStack;
+
+const styles = StyleSheet.create({
+  headerBackgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: 150,
+  },
+});

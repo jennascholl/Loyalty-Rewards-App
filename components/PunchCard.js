@@ -27,7 +27,7 @@ import { authentication, db } from '../firebase/firebaseConfig';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { documentSnapshot, onSnapshot, doc, getDoc, collection, query, where, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
-const PunchCard = ({ item, onPress }) => {
+const PunchCard = ({ item, navigation, onPress }) => {
   const { user } = useContext(AuthContext);
   const [flipped, setFlipped] = useState(false);
   const [sellerData, setSellerData] = useState(null);
@@ -38,7 +38,9 @@ const PunchCard = ({ item, onPress }) => {
     const docRef = doc(db, 'sellers', item.sellerId);
     try {
       const documentSnapshot = await getDoc(docRef);
-      setSellerData(documentSnapshot.data());
+      const sellerItem = documentSnapshot.data();
+      sellerItem.id = documentSnapshot.id;
+      setSellerData(sellerItem);
     } catch (error) {
       console.error('Error getting seller:', error);
     }
@@ -105,13 +107,11 @@ const PunchCard = ({ item, onPress }) => {
                 }}
               />
               <UserInfoText>
-                {sellerData ? (
-                  <TouchableOpacity onPress={onPress}>
-                    <UserName>{sellerData.name}</UserName>
+                {
+                  <TouchableOpacity onPress={() => navigation.navigate('SellerPage', { sellerData })}>
+                    <UserName>{sellerData?.name}</UserName>
                   </TouchableOpacity>
-                ) : (
-                  <Text>Loading seller data...</Text>
-                )}
+}
                 <PostTime>{item.shortDescr}</PostTime>
               </UserInfoText>
             </UserInfo>
@@ -212,13 +212,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
-    // alignSelf: 'flex-end', 
-    // right: 0,
   },
   buttonText: {
     color: '#B97309',
-    fontSize: 16,
-    fontWeight: '400',
+    fontSize: 14,
+    letterSpacing: -0.5,
+    fontWeight: 'bold',
     fontFamily: 'ArialMT',
   },
 
