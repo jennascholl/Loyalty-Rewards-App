@@ -1,31 +1,39 @@
 import React from 'react';
-import {View, Image, StyleSheet, TouchableOpacity, Text, SafeAreaView} from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Text, SafeAreaView } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import HomeScreen from '../screens/HomeScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
 import SellerScreen from '../screens/SellerScreen';
-// import ChatScreen from '../screens/ChatScreen';
-// import ProfileScreen from '../screens/ProfileScreen';
-// import AddPostScreen from '../screens/AddPostScreen';
-// import MessagesScreen from '../screens/MessagesScreen';
-// import EditProfileScreen from '../screens/EditProfileScreen';
+import MapScreen from '../screens/MapScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const FeedStack = ({navigation}) => (
+const getTabBarIconName = (routeName, focused) => {
+  if (routeName === 'Home Tab') {
+    return focused ? 'home' : 'home-outline';
+  } else if (routeName === 'Map Tab') {
+    return focused ? 'location' : 'location-outline';
+  } else if (routeName === 'Profile Tab') {
+    return focused ? 'person-circle' : 'person-circle-outline'
+  }
+  return 'home'; // Change this to the default icon name
+};
+
+const FeedStack = ({ navigation }) => (
   <Stack.Navigator> 
     <Stack.Screen
       name="Home"
       component={HomeScreen}
       options={({ route }) => ({
-        // header: () => null,
+        headerTitle: 'Home',
         headerTitleAlign: 'left',
         headerTitleStyle: {
           color: '#fff',
@@ -41,9 +49,9 @@ const FeedStack = ({navigation}) => (
         },
         headerRight: () => (
           <View style={{marginTop: 10, height: 50}}>
-            <FontAwesome5.Button
-              name='bookmark'
-              size={22}
+            <Ionicons.Button
+              name='bookmarks'
+              size={30}
               backgroundColor="#B97309"
               color="#fff"
               onPress={() => navigation.navigate('Bookmarks')}
@@ -67,7 +75,7 @@ const FeedStack = ({navigation}) => (
         headerBackTitleVisible: false,
         headerBackImage: () => (
           <View style={{marginLeft: 15}}>
-            <Ionicons name="arrow-back" size={25} color="#000" />
+            <Ionicons name="chevron-back-outline" size={30} color="#000" />
           </View>
         ),
       }}
@@ -86,7 +94,7 @@ const FeedStack = ({navigation}) => (
         headerBackTitleVisible: false,
         headerBackImage: () => (
           <View style={{ marginLeft: 15 }}>
-            <Ionicons name="arrow-back" size={25} color="#000" />
+            <Ionicons name="chevron-back-outline" size={30} color="#000" />
           </View>
         ),
         headerBackground: () => (
@@ -100,67 +108,34 @@ const FeedStack = ({navigation}) => (
         ),  
       })}
     />
-    {/* <Stack.Screen
-      name="HomeProfile"
+    <Stack.Screen
+      name="Map"
+      component={MapScreen}
+      options={{
+        title: '',
+        headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: '#B97309',
+          shadowColor: '#B97309',
+          elevation: 0,
+        },
+      }}
+    />
+    <Stack.Screen
+      name="Profile"
       component={ProfileScreen}
       options={{
         title: '',
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: '#fff',
-          shadowColor: '#fff',
+          backgroundColor: '#B97309',
+          shadowColor: '#B97309',
           elevation: 0,
         },
-        headerBackTitleVisible: false,
-        headerBackImage: () => (
-          <View style={{marginLeft: 15}}>
-            <Ionicons name="arrow-back" size={25} color="#2e64e5" />
-          </View>
-        ),
       }}
-    /> */}
+    />
   </Stack.Navigator>
 );
-
-// const MessageStack = ({navigation}) => (
-//   <Stack.Navigator>
-//     <Stack.Screen name="Messages" component={MessagesScreen} />
-//     <Stack.Screen
-//       name="Chat"
-//       component={ChatScreen}
-//       options={({route}) => ({
-//         title: route.params.userName,
-//         headerBackTitleVisible: false,
-//       })}
-//     />
-//   </Stack.Navigator>
-// );
-
-// const ProfileStack = ({navigation}) => (
-//   <Stack.Navigator>
-//     <Stack.Screen
-//       name="Profile"
-//       component={ProfileScreen}
-//       options={{
-//         headerShown: false,
-//       }}
-//     />
-//     <Stack.Screen
-//       name="EditProfile"
-//       component={EditProfileScreen}
-//       options={{
-//         headerTitle: 'Edit Profile',
-//         headerBackTitleVisible: false,
-//         headerTitleAlign: 'center',
-//         headerStyle: {
-//           backgroundColor: '#fff',
-//           shadowColor: '#fff',
-//           elevation: 0,
-//         },
-//       }}
-//     />
-//   </Stack.Navigator>
-// );
 
 const AppStack = () => {
   const getTabBarVisibility = (route) => {
@@ -176,67 +151,53 @@ const AppStack = () => {
 
   return (
     <Tab.Navigator
-    screenOptions={{
-      tabBarActiveTintColor: '#B97309',
-      tabBarStyle: {
-        backgroundColor: '#fff',
-        paddingTop: 0, // Remove the top padding of the tab bar
-      },
-      tabBarContentContainerStyle: {
-        paddingTop: 0, // Remove the top padding of the tab bar content
-      },
-    }}>
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color }) => {
+          const iconName = getTabBarIconName(route.name, focused);
+          return <Ionicons name={iconName} color={color} size={35} height={35} />;
+        },
+        tabBarActiveTintColor: '#B97309',
+        tabBarInactiveTintColor: '#E8D9C2',
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          paddingTop: 10,
+        },
+        headerStyle: {
+          height: '8%',
+          backgroundColor: '#B97309',
+          shadowColor: '#B97309',
+          elevation: 0,
+        },
+        headerTitleStyle: {
+          color: '#fff',
+          fontWeight: '300',
+          fontFamily: 'ArialMT',
+          fontSize: 26,
+          marginLeft: 8,
+        },
+      })}
+    >
       <Tab.Screen
         name="Home Tab"
+        component={FeedStack}
         options={{
           tabBarLabel: '',
-          // tabBarVisible: route.state && route.state.index === 0,
-          tabBarIcon: ({color, size}) => (
-          <MaterialCommunityIcons
-            name="home"
-            color="#B97309"
-            size={35}
-          />
-          ),
-          title: '',
-          headerStyle: {
-            height: '8%',
-            backgroundColor: '#B97309',
-            shadowColor: '#B97309',
-            elevation: 0,
-          },
         }}
-        component={FeedStack}
-
       />
-      {/* <Tab.Screen
-        name="Messages"
-        component={MessageStack}
-        options={({route}) => ({
-          tabBarVisible: getTabBarVisibility(route),
-          // Or Hide tabbar when push!
-          // https://github.com/react-navigation/react-navigation/issues/7677
-          // tabBarVisible: route.state && route.state.index === 0,
-          // tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name="chatbox-ellipses-outline"
-              color={color}
-              size={size}
-            />
-          ),
-        })}
-      /> */}
-      {/* <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
+      <Tab.Screen
+        name="Map Tab"
+        component={MapScreen}
         options={{
-          // tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="person-outline" color={color} size={size} />
-          ),
+          tabBarLabel: '',
         }}
-      /> */}
+      />
+      <Tab.Screen
+        name="Profile Tab"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: '',
+        }}
+      />
     </Tab.Navigator>
   );
 };

@@ -72,7 +72,7 @@ const PunchCard = ({ item, navigation, onPress }) => {
       punchesArray.push(
         <View key={i}>
           {i <= item.current && (
-            <Ionicons name={'md-radio-button-on'} size={30} color={'#B97309'} />
+            <Ionicons name={'star'} size={30} color={'#B97309'} />
           )}
           {i > item.current && (
             <Ionicons name={'md-ellipse'} size={30} color={'#fff'} />

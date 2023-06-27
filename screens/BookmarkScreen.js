@@ -75,7 +75,7 @@ const BookmarkScreen = () => {
         paddingTop: 10,            
          }}>
       </View>
-      <Container style={{ marginTop: 40, position: 'absolute', width: '100%' }}>
+      <Container style={{ marginTop: 20, position: 'absolute', width: '100%' }}>
         <FlatList style={{width:'100%'}}
           data={cardData}
           renderItem={({ item }) => (
