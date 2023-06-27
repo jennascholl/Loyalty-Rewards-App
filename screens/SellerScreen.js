@@ -2,11 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { Text, SafeAreaView, ScrollView, View, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { AuthContext } from '../navigation/AuthProvider';
 import { authentication, db } from '../firebase/firebaseConfig';
-import { doc, getDoc, getDocs, collection, updateDoc, arrayRemove, arrayUnion, query, where, collectionGroup, setLogLevel } from "firebase/firestore"; 
+import { doc, getDoc, orderBy, getDocs, collection, updateDoc, arrayRemove, arrayUnion, query, where, collectionGroup, setLogLevel } from "firebase/firestore"; 
 import { useRoute } from "@react-navigation/native";
 
 import { COLORS, icons, images, SIZES } from "../constants";
 import { PunchCard } from "../components/PunchCard";
+import Bulletin from "../components/Bulletin";
 import {
   Container,
   Card,
@@ -35,6 +36,7 @@ const SellerScreen = () => {
   const sellerData = route.params?.sellerData;
   const [filterTab, setFilterTab] = useState(1);
   const [cardData, setCardData] = useState([]);
+  const [bulletins, setBulletins] = useState([]);
   const [following, setFollowing] = useState(false);
   const { user } = useContext(AuthContext); 
 
@@ -71,9 +73,27 @@ const SellerScreen = () => {
         console.log('Error fetching follows: ', error);
       }
     };
+
+    const getBulletins = async () => {
+      try {
+        if (sellerData && sellerData.id) { // Check if sellerData and sellerData.id are defined
+          const sellerRef = doc(db, 'sellers', sellerData.id);
+          const bulletinSnapshot = await getDocs(collection(sellerRef, 'bulletins'), orderBy('date'));
+          const bulletinData = bulletinSnapshot.docs.map((doc) => {
+            const bulletinItem = doc.data();
+            bulletinItem.id = doc.id; // Assign the document ID to the id property
+            return bulletinItem;
+          });
+          setBulletins(bulletinData);
+        }
+      } catch (error) {
+        console.log('Error fetching bulletins: ', error);
+      }
+    };
   
     getCards();
     getFollowing();
+    getBulletins();
   }, []);
 
   const updateFollowing = async () => {
@@ -137,6 +157,7 @@ const SellerScreen = () => {
       </View>
       <Container style={{ width:'100%', marginTop: -200}}>
         {filterTab == 1 &&
+          <View style={{width: '100%', height: '150%', borderRadius: 25,}}>
           <FlatList style={{width:'100%'}}
             data={cardData}
             renderItem={({ item }) => (
@@ -146,9 +167,22 @@ const SellerScreen = () => {
               )}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
-          />
+            />
+            </View>
         }
-        {filterTab == 2 && <Text>Bulletin</Text>}
+        {filterTab == 2 &&
+          <View style={styles.bulletinBoard}>
+            <FlatList style={{ width: '100%' }}
+              data={bulletins}
+              renderItem={({ item }) => (
+                <Bulletin
+                  item={item}
+                />
+              )}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>}
         {filterTab == 3 && <Text>About</Text>}
       </Container>
     </SafeAreaView>
@@ -173,5 +207,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'ArialMT',
     letterSpacing: -0.5,
+  },
+  bulletinBoard: {
+    width: '100%',
+    height: '150%',
+    backgroundColor: '#fff',
+    borderRadius: 25,
   }
 });

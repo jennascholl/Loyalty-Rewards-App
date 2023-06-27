@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Text, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, SafeAreaView, View, TouchableOpacity, FlatList, StyleSheet, Keyboard } from "react-native";
 import { AuthContext } from '../navigation/AuthProvider';
 import { authentication, db } from '../firebase/firebaseConfig';
-import { doc, getDoc, getDocs, collection, documentId, query, where, collectionGroup, setLogLevel } from "firebase/firestore"; 
+import { doc, getDoc, getDocs, collection, orderBy, query, where, collectionGroup, setLogLevel } from "firebase/firestore"; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS, icons, images, SIZES } from "../constants";
 import { PunchCard } from "../components/PunchCard";
@@ -43,6 +43,7 @@ const HomeScreen = ({navigation}) => {
         });
         cardData.push(...sellerCardData);
       }
+      cardData.sort((a,b) => a.expiration - b.expiration);
       setCardData(cardData);
     } catch (error) {
       console.log('Error fetching data: ', error);
@@ -55,7 +56,6 @@ const HomeScreen = ({navigation}) => {
     const follows = documentSnapshot.data().follows;
     const filteredCardData = cardData.filter((item) => follows.includes(item.sellerId));
     setFollowing(filteredCardData);
-    console.log(following);
   };
 
   useEffect(() => {  
@@ -86,7 +86,7 @@ const HomeScreen = ({navigation}) => {
             }}
           /> */}
           <View style={{
-            height: '25%',
+            height: '35%',
             flex: 1,
             width: '100%',
             backgroundColor: '#B97309',
