@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {View, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, Platform, StyleSheet, SafeAreaView} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
@@ -13,81 +13,74 @@ const SignupScreen = ({navigation}) => {
   const {register} = useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Create an account</Text>
-
-      <FormInput
-        labelValue={email}
-        onChangeText={(userEmail) => setEmail(userEmail)}
-        placeholderText="Email"
-        iconType="user"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
-
-      <FormInput
-        labelValue={password}
-        onChangeText={(userPassword) => setPassword(userPassword)}
-        placeholderText="Password"
-        iconType="lock"
-        secureTextEntry={true}
-      />
-
-      <FormInput
-        labelValue={confirmPassword}
-        onChangeText={(userPassword) => setConfirmPassword(userPassword)}
-        placeholderText="Confirm Password"
-        iconType="lock"
-        secureTextEntry={true}
-      />
-
-      <FormButton
-        buttonTitle="Sign Up"
-        onPress={() => register(email, password)}
-      />
-
-      <View style={styles.textPrivate}>
-        <Text style={styles.color_textPrivate}>
-          By registering, you confirm that you accept our{' '}
-        </Text>
-        <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
-          <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-            Terms of service
-          </Text>
-        </TouchableOpacity>
-        <Text style={styles.color_textPrivate}> and </Text>
-        <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-          Privacy Policy
-        </Text>
-      </View>
-
-      {Platform.OS === 'android' ? (
-        <View>
-          <SocialButton
-            buttonTitle="Sign Up with Facebook"
-            btnType="facebook"
-            color="#4867aa"
-            backgroundColor="#e6eaf4"
-            onPress={() => {}}
-          />
-    
-          <SocialButton
-            buttonTitle="Sign Up with Google"
-            btnType="google"
-            color="#de4d41"
-            backgroundColor="#f5e7ea"
-            onPress={() => {}}
-          />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F1F1F0' }}>
+      <View style={{
+        flex: 1,
+        zIndex: 0,
+      }}>
+        <View style={{
+          height: '48%',
+          width: '100%',
+          // marginTop: -50,
+          backgroundColor: '#B97309',
+          borderColor: '#B97309',
+          borderBottomLeftRadius: 80,
+          position: 'absolute',
+          paddingTop: 80,          
+            paddingHorizontal: 30,
+          }}>
+          <Text style={{ fontWeight: 600, fontSize: 32, color: "#fff" }}>Create Account</Text>
+          <Text style={{ fontWeight: 300, fontSize: 20, color: "#fff"}}>Sign Up with an email and password to get started</Text>
         </View>
-      ) : null}
+      </View>
+      <View style={{flex: 1, marginTop: -200, paddingHorizontal: 20 }}>
+        <FormInput
+          labelValue={email}
+          onChangeText={(userEmail) => setEmail(userEmail)}
+          placeholderText="Email"
+          iconType="user"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
 
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.navButtonText}>Have an account? Sign In</Text>
-      </TouchableOpacity>
-    </View>
+        <FormInput
+          labelValue={password}
+          onChangeText={(userPassword) => setPassword(userPassword)}
+          placeholderText="Password"
+          iconType="lock"
+          secureTextEntry={true}
+        />
+
+        <FormInput
+          labelValue={confirmPassword}
+          onChangeText={(userPassword) => setConfirmPassword(userPassword)}
+          placeholderText="Confirm Password"
+          iconType="lock"
+          secureTextEntry={true}
+        />
+
+        <FormButton
+          buttonTitle="SIGN UP"
+          onPress={() => register(email, password)}
+        />
+
+        <View style={styles.textPrivate}>
+          <Text style={styles.color_textPrivate}>
+            By registering, you confirm that you accept our{' '}
+          </Text>
+          <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
+            <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
+              Terms of service
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.color_textPrivate}> and </Text>
+          <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
+            Privacy Policy
+          </Text>
+          </View>
+        </View>
+    </SafeAreaView>
   );
 };
 

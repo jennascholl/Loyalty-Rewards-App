@@ -16,6 +16,7 @@ const HomeScreen = ({navigation}) => {
   const [filterTab, setFilterTab] = useState(1);
   const [cardData, setCardData] = useState([]);
   const [following, setFollowing] = useState([]);
+  const [inProgressCards, setInProgressCards] = useState([]);
   const { user } = useContext(AuthContext);
 
   const onSelectSwitch = value => {
@@ -58,12 +59,39 @@ const HomeScreen = ({navigation}) => {
     setFollowing(filteredCardData);
   };
 
+  fetchInProgress = async () => {
+    try {
+      const docRef = doc(db, 'users', user.uid);
+      const documentSnapshot = await getDoc(docRef);
+      const inProgress = documentSnapshot.data().inProgress;
+      const inProgressIds = inProgress?.map((card) => card.cardId);
+      const sellersSnapshot = await getDocs(collection(db, 'sellers'));
+      const newCardData = [];
+
+      for (const sellerDoc of sellersSnapshot.docs) {
+        const cardsSnapshot = await getDocs(collection(sellerDoc.ref, 'cards'));
+        const sellerCardData = cardsSnapshot.docs.map((doc) => {
+          const cardItem = doc.data();
+          cardItem.id = doc.id; // Assign the document ID to the id property
+          return cardItem;
+        });
+        newCardData.push(...sellerCardData);
+      }
+      const filteredCardData = newCardData.filter((item) => inProgressIds?.includes(item.id));
+      setInProgressCards(filteredCardData);
+
+    } catch (error) {
+      console.log('Error fetching cards in progress: ', error);
+    }
+  };
+
   useEffect(() => {  
     fetchData();
   }, [filterTab]);
 
   useEffect(() => {
     fetchFollowing();
+    fetchInProgress();
   }, [cardData]);
 
 
@@ -76,21 +104,12 @@ const HomeScreen = ({navigation}) => {
             zIndex: 0,
           }}
         >
-          {/* <Welcome
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            handleClick={() => {
-              if (searchTerm) {
-                // router.push(`/search/${searchTerm}`)
-              }
-            }}
-          /> */}
           <View style={{
             height: '35%',
             flex: 1,
             width: '100%',
             backgroundColor: '#B97309',
-            borderColor: '#;B97309',
+            borderColor: '#B97309',
             borderBottomLeftRadius: 80,
             position: 'absolute',
             paddingTop: 10,            
@@ -130,7 +149,18 @@ const HomeScreen = ({navigation}) => {
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
           />}
-        {filterTab == 3 && <Text>In Progress</Text>}
+        {filterTab == 3 &&
+          <FlatList style={{ width: '100%' }}
+            data={inProgressCards}
+            renderItem={({ item }) => (
+              <PunchCard
+                item={item}
+                navigation={navigation}
+                />
+              )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />}
       </Container>
       <KeyboardAvoidingView style={{ height: 100, justifyContent: "flex-end"}}
         enabled
@@ -163,15 +193,11 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   searchContainer: {
-    // flex: 1,
-    // alignItems: "center",
-    
     backgroundColor: '#fff',
     height: 75,
     width: '100%',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    // zIndex: 3,
   },
   searchWrapper: {
     flex: 1,

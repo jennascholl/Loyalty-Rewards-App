@@ -6,102 +6,79 @@ import {
   Image,
   Platform,
   StyleSheet,
-  ScrollView
+  SafeAreaView
 } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
-import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const {login, googleLogin, fbLogin} = useContext(AuthContext);
+  const {login} = useContext(AuthContext);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* <Image
-        source={require('../assets/rn-social-logo.png')}
-        style={styles.logo}
-      /> */}
-      <Text style={styles.text}>Loyalty Rewards App</Text>
-
-      <FormInput
-        labelValue={email}
-        onChangeText={(userEmail) => setEmail(userEmail)}
-        placeholderText="Email"
-        iconType="user"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
-
-      <FormInput
-        labelValue={password}
-        onChangeText={(userPassword) => setPassword(userPassword)}
-        placeholderText="Password"
-        iconType="lock"
-        secureTextEntry={true}
-      />
-
-      <FormButton
-        buttonTitle="Sign In"
-        onPress={() => login(email, password)}
-      />
-
-      {/* <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
-        <Text style={styles.navButtonText}>Forgot Password?</Text>
-      </TouchableOpacity> */}
-
-      {/* {Platform.OS === 'android' ? ( */}
-        <View>
-          {/* <SocialButton
-            buttonTitle="Sign In with Facebook"
-            btnType="facebook"
-            color="#4867aa"
-            backgroundColor="#e6eaf4"
-            // onPress={() => fbLogin()}
-          /> */}
-
-          {/* <SocialButton
-            buttonTitle="Sign In with Google"
-            btnType="google"
-            color="#de4d41"
-            backgroundColor="#f5e7ea"
-            // onPress={() => googleLogin()}
-          /> */}
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F1F1F0' }}>
+      <View style={{
+        flex: 1,
+        zIndex: 0,
+      }}>
+        <View style={{
+          height: '80%',
+          width: '100%',
+          marginTop: -50,
+          backgroundColor: '#B97309',
+          borderColor: '#B97309',
+          borderBottomLeftRadius: 80,
+          position: 'absolute',
+          paddingTop: 200,          
+          paddingHorizontal: 30,
+          }}>
+          <Text style={{ fontWeight: 600, fontSize: 32, color: "#fff" }}>Welcome</Text>
+          <Text style={{ fontWeight: 300, fontSize: 20, color: "#fff"}}>Sign In with an email and password to get started</Text>
         </View>
-      {/* ) : null}  */}
+      </View>
+      <View style={{flex: 1, marginTop: -100, paddingHorizontal: 20 }}>
+        <FormInput
+          labelValue={email}
+          onChangeText={(userEmail) => setEmail(userEmail)}
+          placeholderText="Email"
+          iconType="user"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
 
-      <TouchableOpacity
-        style={styles.forgotButton}
-        onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.navButtonText}>
-          Don't have an acount? Sign up here
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <FormInput
+          labelValue={password}
+          onChangeText={(userPassword) => setPassword(userPassword)}
+          placeholderText="Password"
+          iconType="lock"
+          secureTextEntry={true}
+        />
+
+        <FormButton
+          buttonTitle="SIGN IN"
+          onPress={() => login(email, password)}
+        />
+
+        <TouchableOpacity
+          style={styles.forgotButton}
+          onPress={() => navigation.navigate('Signup')}>
+          <Text style={styles.navButtonText}>
+            Don't have an acount? Sign up here
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+    </SafeAreaView>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f9fafd',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: 75
-  },
-
-  logo: {
-    height: 150,
-    width: 150,
-    resizeMode: 'cover',
-  },
   text: {
     fontFamily: 'Arial-BoldMT',
     fontSize: 28,

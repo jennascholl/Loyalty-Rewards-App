@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { useRoute } from '@react-navigation/native';
 import {
   Container,
   Card,
@@ -17,6 +17,7 @@ import {
   InteractionText,
   Divider,
 } from '../styles/FeedStyles';
+import Punch from '../components/Punch';
 
 // import ProgressiveImage from './ProgressiveImage';
 
@@ -31,8 +32,10 @@ const PunchCard = ({ item, navigation, onPress }) => {
   const { user } = useContext(AuthContext);
   const [flipped, setFlipped] = useState(false);
   const [sellerData, setSellerData] = useState(null);
-  const [userData, setUserData] = useState(null);
   const [bookmarkData, setBookmarkData] = useState([]);
+  const [numPunches, setNumPunches] = useState(0);
+  const route = useRoute();
+  const currentRouteName = route.name;
 
   const getSeller = async () => {
     const docRef = doc(db, 'sellers', item.sellerId);
@@ -50,8 +53,13 @@ const PunchCard = ({ item, navigation, onPress }) => {
     const docRef = doc(db, 'users', user.uid);
     try {
       const documentSnapshot = await getDoc(docRef);
-      setUserData(documentSnapshot.data());
       setBookmarkData(documentSnapshot.data().bookmarks);
+      const inProgress = documentSnapshot.data().inProgress;
+      const punchData = inProgress?.map((card) => card.cardId);
+      if (punchData.includes(item.id)) {
+        const selectedCard = inProgress.find((card) => card.cardId === item.id);
+        setNumPunches(selectedCard.current);
+      }
     } catch (error) {
       console.log('Error fetching user: ', error);
     }
@@ -71,17 +79,17 @@ const PunchCard = ({ item, navigation, onPress }) => {
     for (let i = 1; i <= 10; i++) {
       punchesArray.push(
         <View key={i}>
-          {i <= item.current && (
-            <Ionicons name={'star'} size={30} color={'#B97309'} />
+          {i <= numPunches && (
+            <Punch number={i} />
           )}
-          {i > item.current && (
+          {i > numPunches && (
             <Ionicons name={'md-ellipse'} size={30} color={'#fff'} />
           )}
         </View>
       );
     }
     return punchesArray;
-  }, [item.current]);
+  }, [numPunches]);
 
   const updateBookmark = async () => {
     const docRef = doc(db, 'users', user.uid);
@@ -107,11 +115,13 @@ const PunchCard = ({ item, navigation, onPress }) => {
                 }}
               />
               <UserInfoText>
-                {
+                {currentRouteName  !== 'SellerPage' ? (
                   <TouchableOpacity onPress={() => navigation.navigate('SellerPage', { sellerData })}>
                     <UserName>{sellerData?.name}</UserName>
                   </TouchableOpacity>
-}
+                ) : (
+                  <UserName>{sellerData?.name}</UserName>
+                )}
                 <PostTime>{item.shortDescr}</PostTime>
               </UserInfoText>
             </UserInfo>
@@ -124,7 +134,7 @@ const PunchCard = ({ item, navigation, onPress }) => {
           </View>
         </View>}
       {flipped == true &&
-        <View style={{ flex: 1, paddingVertical: 15 }}>
+        <View style={{ height: '65%', paddingVertical: 15 }}>
           <PostText style={{ width: '90%', fontSize: 16 }}>{item.longDescr}</PostText>
         </View>}
       <View style={styles.buttonContainer}>
@@ -138,57 +148,6 @@ const PunchCard = ({ item, navigation, onPress }) => {
     </Card>
 
   );
-
-  //   return (
-  //     <Card key={item.id}>
-  //       <UserInfo>
-  //         {/* <UserImg
-  //           source={{
-  //             uri: userData
-  //               ? userData.userImg ||
-  //                 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
-  //               : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-  //           }}
-  //         /> */}
-  //         <UserInfoText>
-  //           <TouchableOpacity onPress={onPress}>
-  //             <UserName>
-  //               {sellerData ? userData.fname || 'Test Seller' : 'Test'}
-  //             </UserName>
-  //           </TouchableOpacity>
-  //           {/* <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime> */}
-  //         </UserInfoText>
-  //       </UserInfo>
-  //       <PostText>{item.shortDescr}</PostText>
-  {/* {item.postImg != null ? <PostImg source={{uri: item.postImg}} /> : <Divider />} */ }
-  {/* {item.postImg != null ? (
-        <ProgressiveImage
-          defaultImageSource={require('../assets/default-img.jpg')}
-          source={{uri: item.postImg}}
-          style={{width: '100%', height: 250}}
-          resizeMode="cover"
-        />
-      ) : (
-        <Divider />
-      )} */}
-
-  //       <InteractionWrapper>
-  //         <Interaction active={item.bookmarked}>
-  //           <Ionicons name={likeIcon} size={25} color={likeIconColor} />
-  //           {/* <InteractionText active={item.bookmarked}>{likeText}</InteractionText> */}
-  //         </Interaction>
-  //         {/* <Interaction>
-  //           <Ionicons name="md-chatbubble-outline" size={25} />
-  //           <InteractionText>{commentText}</InteractionText>
-  //         </Interaction> */}
-  //         {/* {user.uid == item.userId ? (
-  //           <Interaction onPress={() => onDelete(item.id)}>
-  //             <Ionicons name="md-trash-bin" size={25} />
-  //           </Interaction>
-  //         ) : null} */}
-  //       </InteractionWrapper>
-  //     </Card>
-  //   );
 };
 
 export { PunchCard };

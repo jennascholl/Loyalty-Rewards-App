@@ -3,9 +3,9 @@ import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import { windowHeight, windowWidth } from '../utils/Dimensions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Bulletin = ({item}) => {
+const Bulletin = ({ item, navigation, sellerData }) => {
   return (
-    <TouchableOpacity style={styles.bulletin}>
+    <TouchableOpacity style={styles.bulletin} onPress={() => navigation.navigate('BulletinScreen', { item, sellerData })}>
       <Ionicons size={25} color={'#B97309'} name="chatbox-ellipses-outline" style={{marginLeft: 10, alignSelf: 'center'}}></Ionicons>
       <View style={{marginHorizontal: 10, width: '80%', paddingHorizontal: 10}}>
         <Text style={{ fontSize: 14, fontWeight: '600' }}>{item.header}</Text>

@@ -23,15 +23,10 @@ import {
   InteractionText,
   Divider,
 } from '../styles/FeedStyles';
-// import {
-//   Nearbyjobs,
-//   Popularjobs,
-//   ScreenHeaderBtn,
-//   Welcome,
-// } from "../components";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomSwitch from "../components/home/CustomSwitch";
 
-const SellerScreen = () => {
+const SellerScreen = ({ navigation }) => {
   const route = useRoute();
   const sellerData = route.params?.sellerData;
   const [filterTab, setFilterTab] = useState(1);
@@ -117,17 +112,7 @@ const SellerScreen = () => {
           style={{
             flex: 1,
             paddingBottom: SIZES.medium,
-          }}
-      >
-          {/* <Welcome
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            handleClick={() => {
-              if (searchTerm) {
-                // router.push(`/search/${searchTerm}`)
-              }
-            }}
-          /> */}
+          }}>
           <View style={{
             height: '55%',
             flex: 1,
@@ -141,7 +126,7 @@ const SellerScreen = () => {
             
         }}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 10, marginHorizontal: 20}}>
-            <Text style={{ color: "#fff", fontSize: 26 }}>{sellerData?.name}</Text>
+            <Text style={{ color: "#fff", fontSize: 26, fontWeight: "500" }}>{sellerData?.name}</Text>
             <TouchableOpacity style={styles.headerButton} onPress={updateFollowing}>
               <Text style={styles.headerButtonText}>{following ? "Following" : "Follow"}</Text>
             </TouchableOpacity>
@@ -157,7 +142,7 @@ const SellerScreen = () => {
       </View>
       <Container style={{ width:'100%', marginTop: -200}}>
         {filterTab == 1 &&
-          <View style={{width: '100%', height: '150%', borderRadius: 25,}}>
+          <View style={{width: '100%', height: '150%', paddingBottom: 170, borderRadius: 25,}}>
           <FlatList style={{width:'100%'}}
             data={cardData}
             renderItem={({ item }) => (
@@ -177,13 +162,46 @@ const SellerScreen = () => {
               renderItem={({ item }) => (
                 <Bulletin
                   item={item}
+                  navigation={navigation}
+                  sellerData={sellerData}
                 />
               )}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
             />
           </View>}
-        {filterTab == 3 && <Text>About</Text>}
+        {filterTab == 3 &&
+          <View style={styles.about}>
+            <View style={styles.aboutRow}>
+              {/* <Ionicons name="compass-outline" color="#B97309" size={25} style={{ alignSelf: 'center' }} /> */}
+              <View style={{marginLeft: 10}}>
+                {/* <Text style={styles.aboutHeader}>LOCATION</Text> */}
+                <Text>{sellerData.about}</Text>
+              </View>
+            </View>
+            <Divider/>
+            <View style={styles.aboutRow}>
+              <Ionicons name="compass-outline" color="#B97309" size={25} style={{ alignSelf: 'center' }} />
+              <View style={{marginLeft: 10}}>
+                <Text style={styles.aboutHeader}>LOCATION</Text>
+                <Text>{sellerData.address}</Text>
+              </View>
+            </View>
+            <View style={styles.aboutRow}>
+              <Ionicons name="call-outline" color="#B97309" size={25} style={{ alignSelf: 'center' }} />
+              <View style={{marginLeft: 10}}>
+                <Text style={styles.aboutHeader}>PHONE</Text>
+                <Text>{sellerData.phone}</Text>
+              </View>
+            </View>
+            <View style={styles.aboutRow}>
+              <Ionicons name="earth-outline" color="#B97309" size={25} style={{ alignSelf: 'center' }} />
+              <View style={{marginLeft: 10}}>
+                <Text style={styles.aboutHeader}>WEBSITE</Text>
+                <Text>{sellerData.website}</Text>
+              </View>
+            </View>
+          </View>}
       </Container>
     </SafeAreaView>
   );
@@ -213,5 +231,23 @@ const styles = StyleSheet.create({
     height: '150%',
     backgroundColor: '#fff',
     borderRadius: 25,
+  },
+  about: {
+    flex: 1,
+    padding: 20,
+    width: '100%',
+    height: '150%',
+    backgroundColor: '#fff',
+    borderRadius: 25,
+  },
+  aboutRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  aboutHeader: {
+    color: "#767675",
+    fontSize: 12,
+    fontWeight: '700',
   }
 });

@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import { windowHeight, windowWidth } from '../utils/Dimensions';
+import FormButton from '../components/FormButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { AuthContext } from '../navigation/AuthProvider';
 
 const ProfileScreen = () => {
+  const {logout} = useContext(AuthContext);
   return (
-    <Text>This is the profile screen</Text>
+    <View style={{padding: 20}}>
+      <FormButton
+        buttonTitle="SIGN OUT"
+        onPress={() => logout()}
+      />
+    </View>
+
   );
 };
 
@@ -20,7 +29,5 @@ const styles = StyleSheet.create({
     height: windowHeight / 12,
     padding: 10,
     justifyContent: 'space-between',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
 });

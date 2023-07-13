@@ -1,7 +1,7 @@
-import React, {createContext, useState, useEffect} from 'react';
-import { authentication, db, signOut } from '../firebase/firebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, collection, getDocs } from "firebase/firestore"; 
+import React, {createContext, useState } from 'react';
+import { authentication, db } from '../firebase/firebaseConfig';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, setDoc, collection } from "firebase/firestore"; 
 // import { collection, getDocs, doc, setDoc, set, Timestamp } from 'firebase/firestore';
 
 export const AuthContext = createContext();
@@ -32,8 +32,12 @@ export const AuthProvider = ({children}) => {
               const userRef = doc(collection(db, "users"), authentication.currentUser.uid);
               setDoc(userRef, {
                 email: email,
-                bookmarks: {},
-                follows: {},
+                bookmarks: [],
+                follows: [],
+                inProgress: [{
+                  // cardId: '1',
+                  // current: 0,
+                }],
               })
               //ensure we catch any errors at this stage to advise us if something does go wrong
               .catch(error => {

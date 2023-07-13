@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, Text, SafeAreaView } from 'react-native';
+import { View, Image, StyleSheet, Text, SafeAreaView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
@@ -12,6 +12,7 @@ import BookmarkScreen from '../screens/BookmarkScreen';
 import SellerScreen from '../screens/SellerScreen';
 import MapScreen from '../screens/MapScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import BulletinScreen from '../screens/BulletinScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -81,37 +82,63 @@ const FeedStack = ({ navigation }) => (
       }}
     />
     <Stack.Screen
-      name="SellerPage"
-      component={SellerScreen}
+  name="SellerPage"
+  component={SellerScreen}
+  options={({ route }) => ({
+    title: '',
+    headerTitleAlign: 'center',
+    headerStyle: {
+      backgroundColor: '#B97309',
+      shadowColor: '#B97309',
+      elevation: 0,
+    },
+    headerBackTitleVisible: false,
+    headerBackImage: () => (
+      <View style={{ marginLeft: 15 }}>
+        <Ionicons
+          name="chevron-back-outline"
+          size={30}
+          color="#000"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+    ),
+    headerBackground: () => (
+      <Image
+        source={{
+          uri: 'https://bmorrowproductions.com/wp-content/uploads/2023/01/Placeholder-Hero.jpg',
+        }}
+        style={styles.headerBackgroundImage}
+        resizeMode="cover"
+      />
+    ),
+    tabBarVisible: false, // Hide the bottom tab bar
+  })}
+/>
+    <Stack.Screen
+      name="BulletinScreen"
+      component={BulletinScreen}
       options={({ route }) => ({
         title: '',
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: '#B97309',
           shadowColor: '#B97309',
           elevation: 0,
+          backgroundColor: '#B97309'
         },
+      
         headerBackTitleVisible: false,
         headerBackImage: () => (
           <View style={{ marginLeft: 15 }}>
             <Ionicons name="chevron-back-outline" size={30} color="#000" />
           </View>
         ),
-        headerBackground: () => (
-          <Image
-          source={{
-            uri: 'https://bmorrowproductions.com/wp-content/uploads/2023/01/Placeholder-Hero.jpg'
-          }}
-            style={styles.headerBackgroundImage} // Adjust the height to make the image taller
-            resizeMode="cover" // Set the resize mode according to your image aspect ratio
-          />
-        ),  
       })}
     />
     <Stack.Screen
       name="Map"
       component={MapScreen}
-      options={{
+      options={({ route }) => ({        
         title: '',
         headerTitleAlign: 'center',
         headerStyle: {
@@ -119,7 +146,7 @@ const FeedStack = ({ navigation }) => (
           shadowColor: '#B97309',
           elevation: 0,
         },
-      }}
+      })}
     />
     <Stack.Screen
       name="Profile"
@@ -139,11 +166,10 @@ const FeedStack = ({ navigation }) => (
 
 const AppStack = () => {
   const getTabBarVisibility = (route) => {
-    const routeName = route.state
-      ? route.state.routes[route.state.index].name
-      : '';
+    const routeName = route.name;
 
-    if (routeName === 'Chat') {
+    console.log(route.name);
+    if (routeName === "Map Tab") {
       return false;
     }
     return true;
@@ -188,6 +214,7 @@ const AppStack = () => {
         name="Map Tab"
         component={MapScreen}
         options={{
+          headerShown: false,
           tabBarLabel: '',
         }}
       />
